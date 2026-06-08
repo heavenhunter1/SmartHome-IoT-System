@@ -232,3 +232,22 @@ For a more secure setup, Wi-Fi credentials can be stored in a separate local con
 * Build a physical enclosure for the system.
 * Add user settings for temperature thresholds.
 * Deploy the project as a complete portfolio demo.
+## Demo Images
+
+### Hardware Prototype
+
+![Hardware Prototype](images/circuit.jpg)
+
+Current breadboard prototype using ESP32, relay module, PIR sensor, DHT11 sensor, OLED display, LED, and fan/motor output.
+
+### Python Dashboard
+
+![Python Dashboard](images/dashboard.png)
+
+Desktop dashboard for controlling light and fan, switching Auto/Manual modes, and monitoring temperature and humidity in real time.
+
+### OLED Display
+
+![OLED Display](images/oled.jpg)
+
+Local OLED display showing temperature, humidity, light status, fan status, and current control mode.
