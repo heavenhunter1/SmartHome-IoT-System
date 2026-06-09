@@ -2,12 +2,15 @@
 
 This document explains how to set up and run the Smart Home IoT System.
 
-The project includes two main parts:
+The project includes three main parts:
 
 ```text
 1. ESP32 firmware
 2. Python Tkinter dashboard
+3. ESP32 Web Control interface
 ```
+
+---
 
 ## 1. Requirements
 
@@ -42,6 +45,8 @@ Install these libraries in Arduino IDE:
 * Adafruit GFX Library
 * Adafruit SSD1306
 
+---
+
 ## 2. ESP32 Firmware Setup
 
 Open the ESP32 firmware file:
@@ -59,7 +64,43 @@ const char* password = "YOUR_WIFI_PASSWORD";
 
 Do not upload real Wi-Fi credentials to a public GitHub repository.
 
-## 3. ESP32 Board Settings
+---
+
+## 3. Static IP Configuration
+
+The current firmware uses a static IP configuration for stable local access.
+
+Default local IP:
+
+```text
+192.168.1.88
+```
+
+Default Web Control URL:
+
+```text
+http://192.168.1.88
+```
+
+Default Status API URL:
+
+```text
+http://192.168.1.88/status
+```
+
+If your local network uses a different IP range, update the static IP configuration in the ESP32 firmware:
+
+```cpp
+IPAddress local_IP(192, 168, 1, 88);
+IPAddress gateway(192, 168, 1, 1);
+IPAddress subnet(255, 255, 255, 0);
+IPAddress primaryDNS(8, 8, 8, 8);
+IPAddress secondaryDNS(8, 8, 4, 4);
+```
+
+---
+
+## 4. ESP32 Board Settings
 
 In Arduino IDE, select:
 
@@ -83,7 +124,9 @@ If upload fails, try:
 * Checking the USB cable
 * Restarting Arduino IDE
 
-## 4. Check ESP32 IP Address
+---
+
+## 5. Check ESP32 IP Address
 
 After uploading, open Serial Monitor at:
 
@@ -96,30 +139,20 @@ Press the EN / RST button on ESP32.
 You should see output similar to:
 
 ```text
-IP: 192.168.1.x
+IP: 192.168.1.88
 HTTP Server Started
 ```
 
-This IP address is needed for the Python dashboard.
+This IP address is used for the Python dashboard and Web Control interface.
 
-Example:
+---
 
-```text
-192.168.1.8
-```
-
-## 5. Test ESP32 API
+## 6. Test ESP32 API
 
 Open a browser and visit:
 
 ```text
-http://YOUR_ESP32_IP/status
-```
-
-Example:
-
-```text
-http://192.168.1.8/status
+http://192.168.1.88/status
 ```
 
 Expected response:
@@ -135,7 +168,35 @@ Expected response:
 }
 ```
 
-## 6. Python Dashboard Setup
+---
+
+## 7. Web Control Setup
+
+The ESP32 serves a mobile-friendly Web Control interface directly from the root route `/`.
+
+Open a browser and visit:
+
+```text
+http://192.168.1.88
+```
+
+The Web Control page can be used on phones, tablets, and computers connected to the same Wi-Fi network.
+
+The Web Control interface supports:
+
+* Light ON/OFF control
+* Fan ON/OFF control
+* Auto/Manual mode switching
+* Temperature and humidity monitoring
+* Mini sparkline charts for temperature and humidity trends
+* EN/VI language toggle
+* Saved language preference using browser localStorage
+
+The Web Control page updates device status automatically using the `/status` API.
+
+---
+
+## 8. Python Dashboard Setup
 
 Open the dashboard file:
 
@@ -146,13 +207,7 @@ dashboard/dashboard.py
 Update the ESP32 IP address:
 
 ```python
-ESP32_IP = "YOUR_ESP32_IP"
-```
-
-Example:
-
-```python
-ESP32_IP = "192.168.1.8"
+ESP32_IP = "192.168.1.88"
 ```
 
 Install the required Python package:
@@ -167,7 +222,9 @@ Run the dashboard:
 python dashboard.py
 ```
 
-## 7. Dashboard Features
+---
+
+## 9. Dashboard Features
 
 The Python dashboard can:
 
@@ -180,7 +237,9 @@ The Python dashboard can:
 * Show ESP32 connection status
 * Automatically refresh status every second
 
-## 8. OLED Display
+---
+
+## 10. OLED Display
 
 The OLED display shows local device status directly on the hardware prototype.
 
@@ -204,25 +263,46 @@ OLED SDA → ESP32 GPIO26
 OLED SCK → ESP32 GPIO27
 ```
 
-## 9. Common Issues
+---
 
-### Dashboard shows ESP32 Disconnected
+## 11. Common Issues
+
+### Dashboard or Web Control shows ESP32 Disconnected
 
 Possible causes:
 
-* ESP32 IP address changed
-* ESP32 and computer are not on the same Wi-Fi network
 * ESP32 is not powered
-* ESP32 firmware is not running
+* ESP32 and the device are not on the same Wi-Fi network
 * Wi-Fi credentials are incorrect
+* Static IP configuration does not match your local network
+* ESP32 firmware is not running
 
 Fix:
 
 ```text
 1. Open Serial Monitor
 2. Check the current ESP32 IP address
-3. Update ESP32_IP in dashboard.py
-4. Run the dashboard again
+3. Open http://192.168.1.88/status in a browser
+4. Update ESP32_IP in dashboard.py if needed
+5. Run the dashboard again
+```
+
+### Web Control does not open
+
+Possible causes:
+
+* The device is not connected to the same Wi-Fi network
+* ESP32 is not powered
+* The static IP is different from your network range
+* Browser cache is loading an old page
+
+Try:
+
+```text
+Refresh the page
+Open a new tab
+Check Serial Monitor
+Visit http://192.168.1.88/status
 ```
 
 ### DHT11 does not return data
@@ -261,10 +341,14 @@ Select the correct port
 Hold BOOT while uploading if needed
 ```
 
-## 10. Notes
+---
 
-* ESP32 IP may change after router restart because of DHCP.
-* For a more stable setup, use static IP or router DHCP reservation.
+## 12. Notes
+
+* The current firmware uses static IP `192.168.1.88` for stable local access.
+* If your local network uses a different IP range, update the static IP configuration in the ESP32 firmware.
+* Router DHCP reservation can also be used as an alternative long-term solution.
 * Do not upload real Wi-Fi credentials to GitHub.
 * The current hardware is a breadboard prototype.
 * A more stable motor/fan connection can be added in a future hardware revision.
+* Do not use Dupont wires for high-voltage AC wiring.
