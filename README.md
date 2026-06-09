@@ -19,6 +19,11 @@ This project was built as a personal hands-on learning project to understand how
 * Dark dashboard UI with scroll and resize support.
 * Clean and organized ESP32 firmware structure.
 * Clean and organized Python dashboard structure.
+* Mobile-friendly Web Control served directly by ESP32.
+* Static IP configuration for stable local access.
+* EN/VI language toggle for Web Control.
+* Saved language preference using browser localStorage.
+* Temperature and humidity mini sparkline charts on Web Control.
 
 ## Hardware Components
 
@@ -169,6 +174,28 @@ The Python Tkinter dashboard allows users to:
 * Monitor device states in real time.
 
 The dashboard uses HTTP requests to communicate with ESP32 and automatically refreshes system status.
+## Web Control
+
+The ESP32 also serves a mobile-friendly Web Control interface directly from the root route `/`.
+
+Users can open the Web Control page from any device connected to the same Wi-Fi network:
+
+```text
+http://192.168.1.88
+```
+
+The Web Control interface supports:
+
+* Light ON/OFF control
+* Fan ON/OFF control
+* Auto/Manual mode switching
+* Temperature and humidity monitoring
+* Mini sparkline charts for temperature and humidity trends
+* EN/VI language toggle
+* Saved language preference using browser localStorage
+
+This makes the system easier to use on phones, tablets, and computers without needing to run the Python dashboard.
+
 
 ## What I Learned
 
@@ -224,7 +251,10 @@ For a more secure setup, Wi-Fi credentials can be stored in a separate local con
 
 ## Future Improvements
 
-* Add a mobile web interface.
+* Add remote control using Blynk, Arduino Cloud, or another IoT cloud platform.
+* Improve hardware wiring and mount the system on a fixed base.
+* Add sensor status checking and uptime monitoring.
+* Add configurable temperature thresholds for Auto Fan mode.
 * Add static IP or router DHCP reservation.
 * Improve dashboard UI with a more modern framework.
 * Add temperature and humidity data logging.
